@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace TaskLiner
+namespace TaskLiner.DB.entity
 {
     public partial class User
     {
@@ -12,10 +12,12 @@ namespace TaskLiner
             WorkerContracts = new HashSet<WorkerContract>();
         }
 
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Fullname { get; set; }
+        public string Nickname { get; set; }
         public string Avatar { get; set; }
         public string Proffesion { get; set; }
+        public string Password { get; set; }
 
         public virtual ICollection<WorkerContract> WorkerContracts { get; set; }
     }

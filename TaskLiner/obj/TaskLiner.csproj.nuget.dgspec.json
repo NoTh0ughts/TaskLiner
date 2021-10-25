@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj": {}
+    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj": {
+    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj",
+        "projectUniqueName": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj",
         "projectName": "TaskLiner",
-        "projectPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj",
+        "projectPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj",
         "packagesPath": "C:\\Users\\Hello\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\obj\\",
+        "outputPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hello\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -13,6 +13,8 @@ namespace TaskLiner
     {
         public static void Main(string[] args)
         {
+            ConfigLoader.Load(".env");
+            Console.WriteLine(ConfigLoader.MySqlURL);
             CreateHostBuilder(args).Build().Run();
         }
 

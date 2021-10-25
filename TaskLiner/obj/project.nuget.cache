@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+kPDGc9mUuZJlvnqw86kDFmtq6S+e0ToqshOkmeAqdmq20Ky9pYXiyERCyncbHS9flA4OIgZIVJE+CIWCr9xKw==",
+  "dgSpecHash": "7jjJeQQXiKwFeK2iyJVF6dW6T7jX/FZdMRftsv298KTsES9DFy8LHv7ybargO7HItZIgJUqdTA4vh0nqfsVEpw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj",
+  "projectFilePath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hello\\.nuget\\packages\\bouncycastle.netcore\\1.8.5\\bouncycastle.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\Hello\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

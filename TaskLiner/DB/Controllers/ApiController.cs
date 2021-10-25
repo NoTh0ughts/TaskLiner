@@ -9,13 +9,11 @@ namespace TaskLiner.Controllers
     [Route("[controller]")]
     public class ApiController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ApiController> _logger;
 
-        public ApiController(ILogger<WeatherForecastController> logger)
+        public ApiController(ILogger<ApiController> logger)
         {
             _logger = logger;
         }
-
-
     }
 }

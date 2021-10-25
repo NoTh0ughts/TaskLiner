@@ -4,18 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace TaskLiner
+namespace TaskLiner.DB.entity
 {
-    public partial class TaskLinerContext : DbContext
+    public partial class TasklinerContext : DbContext
     {
-        public TaskLinerContext()
-        {
-        }
+        public TasklinerContext() { }
 
-        public TaskLinerContext(DbContextOptions<TaskLinerContext> options)
-            : base(options)
-        {
-        }
+        public TasklinerContext(DbContextOptions<TasklinerContext> options)
+            : base(options) { }
 
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
@@ -29,20 +25,19 @@ namespace TaskLiner
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql(ConfigLoader.MySqlURL, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.27-mysql"));
+                optionsBuilder.UseMySQL(ConfigLoader.MySqlURL);
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasCharSet("utf8mb4")
-                .UseCollation("utf8mb4_0900_ai_ci");
-
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.ToTable("company");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
@@ -61,9 +56,13 @@ namespace TaskLiner
 
                 entity.HasIndex(e => e.CompanyId, "company_id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
 
-                entity.Property(e => e.CompanyId).HasColumnName("company_id");
+                entity.Property(e => e.CompanyId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("company_id");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(500)
@@ -91,11 +90,11 @@ namespace TaskLiner
 
                 entity.HasIndex(e => e.ProjectId, "project_id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
 
-                entity.Property(e => e.AddDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("add_date");
+                entity.Property(e => e.AddDate).HasColumnName("add_date");
 
                 entity.Property(e => e.Checklist)
                     .HasMaxLength(1000)
@@ -114,24 +113,20 @@ namespace TaskLiner
                     .HasMaxLength(50)
                     .HasColumnName("description");
 
-                entity.Property(e => e.EndDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("end_date");
+                entity.Property(e => e.EndDate).HasColumnName("end_date");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
-                entity.Property(e => e.ProjectId).HasColumnName("project_id");
+                entity.Property(e => e.ProjectId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("project_id");
 
-                entity.Property(e => e.SpendedTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("spended_time");
+                entity.Property(e => e.SpendedTime).HasColumnName("spended_time");
 
-                entity.Property(e => e.StartDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("start_date");
+                entity.Property(e => e.StartDate).HasColumnName("start_date");
 
                 entity.Property(e => e.State)
                     .IsRequired()
@@ -155,15 +150,17 @@ namespace TaskLiner
 
                 entity.HasIndex(e => e.UserId, "user_id");
 
-                entity.Property(e => e.HoursWorked)
-                    .HasColumnType("datetime")
-                    .HasColumnName("hours_worked");
+                entity.Property(e => e.HoursWorked).HasColumnName("hours_worked");
 
                 entity.Property(e => e.IsOwner).HasColumnName("is_owner");
 
-                entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.TaskId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("task_id");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Task)
                     .WithMany()
@@ -188,9 +185,13 @@ namespace TaskLiner
 
                 entity.HasIndex(e => e.UserId, "user_id");
 
-                entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.TaskId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("task_id");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Task)
                     .WithMany()
@@ -209,7 +210,9 @@ namespace TaskLiner
             {
                 entity.ToTable("user");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
 
                 entity.Property(e => e.Avatar)
                     .HasMaxLength(50)
@@ -220,6 +223,16 @@ namespace TaskLiner
                     .HasMaxLength(50)
                     .HasColumnName("fullname");
 
+                entity.Property(e => e.Nickname)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasColumnName("nickname");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("password");
+
                 entity.Property(e => e.Proffesion)
                     .HasMaxLength(100)
                     .HasColumnName("proffesion");
@@ -228,16 +241,19 @@ namespace TaskLiner
             modelBuilder.Entity<WorkerContract>(entity =>
             {
                 entity.HasKey(e => new { e.CompanyId, e.UserId })
-                    .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    .HasName("PRIMARY");
 
                 entity.ToTable("worker_contract");
 
                 entity.HasIndex(e => e.UserId, "user_id");
 
-                entity.Property(e => e.CompanyId).HasColumnName("company_id");
+                entity.Property(e => e.CompanyId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("company_id");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("user_id");
 
                 entity.Property(e => e.IsOwner).HasColumnName("is_owner");
 

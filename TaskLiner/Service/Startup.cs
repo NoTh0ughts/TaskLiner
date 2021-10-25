@@ -52,7 +52,7 @@ namespace TaskLiner
 
             // Добавление UnitOfWork для контекста данных приложения, а так же репозиториев для каждой модели данных
             services.AddEntityFrameworkMySql()
-                .AddDbContext<TaskLinerContext>(options => options.UseMySQL(ConfigLoader.MySqlURL))
+                .AddDbContext<TaskLinerContext>()
                 .AddUnitOfWork<TaskLinerContext>()
                 .AddCustomRepository<Company, GenericRepository<Company>>()
                 .AddCustomRepository<Project, GenericRepository<Project>>()

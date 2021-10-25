@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace TaskLiner
+namespace TaskLiner.DB.entity
 {
     public partial class TaskUserSubscriber
     {
-        public uint UserId { get; set; }
-        public uint TaskId { get; set; }
+        public int UserId { get; set; }
+        public int TaskId { get; set; }
 
         public virtual Task Task { get; set; }
         public virtual User User { get; set; }

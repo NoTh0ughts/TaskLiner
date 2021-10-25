@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace TaskLiner
+namespace TaskLiner.DB.entity
 {
     public partial class Company
     {
@@ -13,7 +13,7 @@ namespace TaskLiner
             WorkerContracts = new HashSet<WorkerContract>();
         }
 
-        public uint Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
