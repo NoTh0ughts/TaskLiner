@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace TaskLiner.DB.entity
+namespace TaskLiner.DB.Entity
+
 {
     public partial class Company
     {

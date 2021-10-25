@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TaskLiner.DB.Entity;
 using TaskLiner.DB.Repos;
 using TaskLiner.DB.UnitOfWork;
 

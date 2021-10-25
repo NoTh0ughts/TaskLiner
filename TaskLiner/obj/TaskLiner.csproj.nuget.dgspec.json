@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj": {}
+    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj": {
+    "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj",
+        "projectUniqueName": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj",
         "projectName": "TaskLiner",
-        "projectPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\TaskLiner.csproj",
+        "projectPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\TaskLiner.csproj",
         "packagesPath": "C:\\Users\\Hello\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\taskliner\\obj\\",
+        "outputPath": "C:\\Users\\Hello\\source\\repos\\TaskLiner\\TaskLiner\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Hello\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
             "EntityFramework": {
               "target": "Package",
               "version": "[6.4.4, )"

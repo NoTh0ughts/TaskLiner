@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskLiner;
+using TaskLiner.DB.Entity;
 
 namespace TaskLiner.Controllers
 {

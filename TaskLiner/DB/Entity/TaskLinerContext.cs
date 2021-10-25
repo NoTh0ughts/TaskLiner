@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace TaskLiner.DB.entity
+namespace TaskLiner.DB.Entity
 {
-    public partial class TasklinerContext : DbContext
+    public partial class TaskLinerContext : DbContext
     {
-        public TasklinerContext() { }
+        public TaskLinerContext() { }
 
-        public TasklinerContext(DbContextOptions<TasklinerContext> options)
+        public TaskLinerContext(DbContextOptions<TaskLinerContext> options)
             : base(options) { }
 
         public virtual DbSet<Company> Companies { get; set; }
