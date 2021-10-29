@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TaskLiner.DB.Entity;
+using TaskLiner.Service.Attributes;
 
-namespace TaskLiner.Controllers
+namespace TaskLiner.DB.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("/[controller]")]
     public class ApiController : ControllerBase
     {
         private readonly ILogger<ApiController> _logger;
@@ -14,6 +18,21 @@ namespace TaskLiner.Controllers
         public ApiController(ILogger<ApiController> logger)
         {
             _logger = logger;
+        }
+
+        [HttpGet("GetTestValue")]
+        [ValidateModel]
+        public async Task<ActionResult> GetTestValue(CancellationToken ct)
+        {
+            try
+            {
+                await using var db = new TaskLinerContext();
+                return Ok("Result: " + db.Companies + " Count : " + db.Companies.Count());
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Error: "+ e);
+            }
         }
     }
 }

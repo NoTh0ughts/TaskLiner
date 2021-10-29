@@ -14,7 +14,7 @@ namespace TaskLiner.DB.UnitOfWork
     public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
     {
         TContext DbContext { get; }
-
+        
         /// <summary>
         /// Сохраняет все изменения для контекста
         /// </summary>

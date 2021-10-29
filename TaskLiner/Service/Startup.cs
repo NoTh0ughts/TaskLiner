@@ -1,16 +1,17 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TaskLiner.DB.Entity;
 using TaskLiner.DB.Repos;
 using TaskLiner.DB.UnitOfWork;
 
-namespace TaskLiner
+namespace TaskLiner.Service
 {
     public class Startup
     {
@@ -42,15 +43,30 @@ namespace TaskLiner
                 });
             });
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-                options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/auth/login");
-                    options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/auth/denied");
+                    #if DEBUG 
+                    options.RequireHttpsMetadata = false;
+                    #else
+                    options.RequireHttpsMetadata = true;
+                    #endif
+                    
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.IDUSER,
+                        
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.AUDIENCE,
+                        
+                        ValidateLifetime = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
                 });
-
-
+            
+           
             // Добавление UnitOfWork для контекста данных приложения, а так же репозиториев для каждой модели данных
             services.AddEntityFrameworkMySql()
                 .AddDbContext<TaskLinerContext>()
@@ -79,10 +95,9 @@ namespace TaskLiner
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
-
             
+            app.UseAuthentication(); 
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
