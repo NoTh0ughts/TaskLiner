@@ -29,9 +29,9 @@ namespace TaskLiner.Service
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "TaskLiner", 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "TaskLiner",
                     Version = "v1",
                     Description = "Program for management of projects",
                     Contact = new OpenApiContact()
@@ -64,9 +64,26 @@ namespace TaskLiner.Service
                         IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                         ValidateIssuerSigningKey = true
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query?["access_token"];
+                            if (!accessToken.HasValue) return System.Threading.Tasks.Task.CompletedTask;
+
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return System.Threading.Tasks.Task.CompletedTask;
+                        }
+                    };
                 });
-            
-           
+
+            services.AddSignalR();
+
             // ƒобавление UnitOfWork дл€ контекста данных приложени€, а так же репозиториев дл€ каждой модели данных
             services.AddEntityFrameworkMySql()
                 .AddDbContext<TaskLinerContext>()
@@ -77,9 +94,10 @@ namespace TaskLiner.Service
                 .AddCustomRepository<TaskUser, GenericRepository<TaskUser>>()
                 .AddCustomRepository<TaskUserSubscriber, GenericRepository<TaskUserSubscriber>>()
                 .AddCustomRepository<User, GenericRepository<User>>()
-                .AddCustomRepository<WorkerContract, GenericRepository<WorkerContract>>();
+                .AddCustomRepository<WorkerContract, GenericRepository<WorkerContract>>()
+                .AddCustomRepository<TaskComment, GenericRepository<TaskComment>>();
 
-
+            
         }
 
         //Ётот метод вызываетс€ во врем€ исполнени€, используетс€ дл€ конфигурции HTTP request pipeline.
@@ -92,7 +110,7 @@ namespace TaskLiner.Service
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskLiner v1"));
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             

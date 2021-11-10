@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TaskLiner.DB.Entity;
@@ -22,6 +23,7 @@ namespace TaskLiner.DB.Controllers
 
         [HttpGet("GetTestValue")]
         [ValidateModel]
+        [Authorize]
         public async Task<ActionResult> GetTestValue(CancellationToken ct)
         {
             try

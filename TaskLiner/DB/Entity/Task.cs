@@ -7,6 +7,11 @@ namespace TaskLiner.DB.Entity
 {
     public partial class Task
     {
+        public Task()
+        {
+            TaskComments = new HashSet<TaskComment>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,5 +26,6 @@ namespace TaskLiner.DB.Entity
         public int ProjectId { get; set; }
 
         public virtual Project Project { get; set; }
+        public virtual ICollection<TaskComment> TaskComments { get; set; }
     }
 }

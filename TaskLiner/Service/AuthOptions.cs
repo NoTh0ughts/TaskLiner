@@ -10,6 +10,6 @@ namespace TaskLiner.Service
         public const string KEY = "TaskLiner_shawerma644";
         public const int LIFETIME = 1;
         public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
-            new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
+            new(Encoding.ASCII.GetBytes(KEY));
     }
 }

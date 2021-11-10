@@ -4,7 +4,6 @@ using System.Collections.Generic;
 #nullable disable
 
 namespace TaskLiner.DB.Entity
-
 {
     public partial class Company
     {

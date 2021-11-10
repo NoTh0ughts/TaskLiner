@@ -9,14 +9,19 @@ namespace TaskLiner.DB.Entity
 {
     public partial class TaskLinerContext : DbContext
     {
-        public TaskLinerContext() { }
+        public TaskLinerContext()
+        {
+        }
 
         public TaskLinerContext(DbContextOptions<TaskLinerContext> options)
-            : base(options) { }
+            : base(options)
+        {
+        }
 
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
+        public virtual DbSet<TaskComment> TaskComments { get; set; }
         public virtual DbSet<TaskUser> TaskUsers { get; set; }
         public virtual DbSet<TaskUserSubscriber> TaskUserSubscribers { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -141,6 +146,45 @@ namespace TaskLiner.DB.Entity
                     .HasConstraintName("task_ibfk_1");
             });
 
+            modelBuilder.Entity<TaskComment>(entity =>
+            {
+                entity.ToTable("task_comment");
+
+                entity.HasIndex(e => e.TaskId, "task_id");
+
+                entity.HasIndex(e => e.UserId, "user_id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(500)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.SpendedTime).HasColumnName("spended_time");
+
+                entity.Property(e => e.TaskId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("task_id");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Task)
+                    .WithMany(p => p.TaskComments)
+                    .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("task_comment_ibfk_2");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.TaskComments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("task_comment_ibfk_1");
+            });
+
             modelBuilder.Entity<TaskUser>(entity =>
             {
                 entity.HasNoKey();
@@ -218,6 +262,11 @@ namespace TaskLiner.DB.Entity
                 entity.Property(e => e.Avatar)
                     .HasMaxLength(50)
                     .HasColumnName("avatar");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(60)
+                    .HasColumnName("email");
 
                 entity.Property(e => e.Fullname)
                     .IsRequired()

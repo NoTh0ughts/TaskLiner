@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using TaskLiner.DB.Entity;
-using TaskLiner.DB.Entity.Views;
 using TaskLiner.DB.UnitOfWork;
 using TaskLiner.Service;
 
 namespace TaskLiner.DB.Controllers
 {
-    [ApiController] 
+    [ApiController]
     [Route("/[controller]")]
     public class AccountController : ControllerBase
     {
@@ -71,6 +70,8 @@ namespace TaskLiner.DB.Controllers
                 var claimsIdentity = 
                     new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                         ClaimsIdentity.DefaultRoleClaimType);
+
+                
 
                 return claimsIdentity;
             }
