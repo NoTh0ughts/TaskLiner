@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +28,9 @@ namespace TaskLiner.Service
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(x =>  x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -42,6 +46,22 @@ namespace TaskLiner.Service
                     }
                 });
             });
+
+            // Добавление UnitOfWork для контекста данных приложения, а так же репозиториев для каждой модели данных
+            services.AddEntityFrameworkMySql()
+                .AddDbContext<TaskLinerContext>()
+                .AddUnitOfWork<TaskLinerContext>()
+                .AddCustomRepository<Company, GenericRepository<Company>>()
+                .AddCustomRepository<Project, GenericRepository<Project>>()
+                .AddCustomRepository<Task, GenericRepository<Task>>()
+                .AddCustomRepository<TaskUser, GenericRepository<TaskUser>>()
+                .AddCustomRepository<TaskUserSubscriber, GenericRepository<TaskUserSubscriber>>()
+                .AddCustomRepository<User, GenericRepository<User>>()
+                .AddCustomRepository<WorkerContract, GenericRepository<WorkerContract>>()
+                .AddCustomRepository<TaskComment, GenericRepository<TaskComment>>()
+                .AddCustomRepository<ProjectAccess, GenericRepository<ProjectAccess>>();
+
+            services.AddMediatR(this.GetType().Assembly);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -83,21 +103,6 @@ namespace TaskLiner.Service
                 });
 
             services.AddSignalR();
-
-            // Добавление UnitOfWork для контекста данных приложения, а так же репозиториев для каждой модели данных
-            services.AddEntityFrameworkMySql()
-                .AddDbContext<TaskLinerContext>()
-                .AddUnitOfWork<TaskLinerContext>()
-                .AddCustomRepository<Company, GenericRepository<Company>>()
-                .AddCustomRepository<Project, GenericRepository<Project>>()
-                .AddCustomRepository<Task, GenericRepository<Task>>()
-                .AddCustomRepository<TaskUser, GenericRepository<TaskUser>>()
-                .AddCustomRepository<TaskUserSubscriber, GenericRepository<TaskUserSubscriber>>()
-                .AddCustomRepository<User, GenericRepository<User>>()
-                .AddCustomRepository<WorkerContract, GenericRepository<WorkerContract>>()
-                .AddCustomRepository<TaskComment, GenericRepository<TaskComment>>();
-
-            
         }
 
         //Этот метод вызывается во время исполнения, используется для конфигурции HTTP request pipeline.

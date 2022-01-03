@@ -10,6 +10,8 @@ namespace TaskLiner.DB.Entity
         public Task()
         {
             TaskComments = new HashSet<TaskComment>();
+            TaskSubscribers = new HashSet<TaskSubscriber>();
+            UserTasks = new HashSet<UserTask>();
         }
 
         public int Id { get; set; }
@@ -27,5 +29,7 @@ namespace TaskLiner.DB.Entity
 
         public virtual Project Project { get; set; }
         public virtual ICollection<TaskComment> TaskComments { get; set; }
+        public virtual ICollection<TaskSubscriber> TaskSubscribers { get; set; }
+        public virtual ICollection<UserTask> UserTasks { get; set; }
     }
 }

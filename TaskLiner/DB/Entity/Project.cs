@@ -9,6 +9,7 @@ namespace TaskLiner.DB.Entity
     {
         public Project()
         {
+            ProjectAccesses = new HashSet<ProjectAccess>();
             Tasks = new HashSet<Task>();
         }
 
@@ -19,6 +20,7 @@ namespace TaskLiner.DB.Entity
         public int CompanyId { get; set; }
 
         public virtual Company Company { get; set; }
+        public virtual ICollection<ProjectAccess> ProjectAccesses { get; set; }
         public virtual ICollection<Task> Tasks { get; set; }
     }
 }

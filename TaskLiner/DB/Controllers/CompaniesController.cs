@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using TaskLiner.DB.Controllers.Commands.Companys;
 using TaskLiner.DB.Entity;
 
 namespace TaskLiner.DB.Controllers
@@ -11,94 +12,82 @@ namespace TaskLiner.DB.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
-        private readonly TaskLinerContext _context;
+        private readonly IMediator _mediator;
 
-        public CompaniesController(TaskLinerContext context)
+        public CompaniesController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
 
-        // GET: api/Companies
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
+        [HttpGet("user")]
+        [ProducesResponseType(typeof(Company), 200)]
+        [ProducesResponseType(typeof(Company), 404)]
+        public async Task<IActionResult> GetCompaniesForUser(int id)
         {
-            return await _context.Companies.ToListAsync();
+            var companies = await _mediator.Send(new GetCompaniesForUserQuery() { User_id = id });
+
+            if (companies is null)
+                return NotFound();
+
+            return Ok(companies);
         }
 
-        // GET: api/Companies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Company>> GetCompany(uint id)
+        [ProducesResponseType(typeof(Company), 200)]
+        [ProducesResponseType(typeof(Company), 404)]
+        public async Task<IActionResult> GetCompany(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
-
-            if (company == null)
-            {
+            var company = await _mediator.Send(new GetCompanyQuery() { Company_id = id });
+            if (company is null)
                 return NotFound();
-            }
 
-            return company;
+            return Ok(company);
         }
 
-        // PUT: api/Companies/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(uint id, Company company)
+        [HttpGet("workers/{company_id}")]
+        [ProducesResponseType(typeof(IEnumerator<User>), 200)]
+        [ProducesResponseType(typeof(IEnumerator<User>), 404)]
+        public async Task<IActionResult> GetWorkers(int company_id)
         {
-            if (id != company.Id)
-            {
+            var workers = await _mediator.Send(new GetWorkersQuery() { Company_id = company_id });
+            if (workers is null)
+                return NotFound();
+
+            return Ok(workers);
+        }
+
+        [HttpPost(nameof(AddWorker))]
+        [ProducesResponseType(typeof(WorkerContract), 400)]
+        [ProducesResponseType(typeof(WorkerContract), 201)]
+        public async Task<IActionResult> AddWorker(int user_id, int company_id)
+        {
+            var contract = await _mediator.Send(new PostWorkerContractCommand()
+            { Company_id = company_id, User_id = user_id });
+            if (contract is null)
                 return BadRequest();
-            }
-
-            _context.Entry(company).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompanyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(contract);
         }
 
-        // POST: api/Companies
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany(Company company)
+
+        [HttpPost(nameof(AddCompany))]
+        [ProducesResponseType(typeof(Company), 400)]
+        [ProducesResponseType(typeof(Company), 201)]
+        
+        public async Task<IActionResult> AddCompany(int user_id, string name, string description)
         {
-            _context.Companies.Add(company);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
-        }
-
-        // DELETE: api/Companies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompany(uint id)
-        {
-            var company = await _context.Companies.FindAsync(id);
-            if (company == null)
+            var company = await _mediator.Send(new PostCompanyCommand() 
+                                                { Name = name, Description = description });
+            
+            if(company is not null)
             {
-                return NotFound();
+                var contract = await _mediator.Send(new PostWorkerContractCommand()
+                { Company_id = company.Id, User_id = user_id, IsOwner = true });
+
+                if (contract is null) return BadRequest();
+
+                return Created($"/api/companys/{company.Id}", company);
             }
-
-            _context.Companies.Remove(company);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool CompanyExists(uint id)
-        {
-            return _context.Companies.Any(e => e.Id == id);
-        }
+            return BadRequest();
+        }   
     }
 }

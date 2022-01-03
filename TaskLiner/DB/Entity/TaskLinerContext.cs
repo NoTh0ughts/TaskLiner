@@ -20,11 +20,12 @@ namespace TaskLiner.DB.Entity
 
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<ProjectAccess> ProjectAccesses { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<TaskComment> TaskComments { get; set; }
-        public virtual DbSet<TaskUser> TaskUsers { get; set; }
-        public virtual DbSet<TaskUserSubscriber> TaskUserSubscribers { get; set; }
+        public virtual DbSet<TaskSubscriber> TaskSubscribers { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserTask> UserTasks { get; set; }
         public virtual DbSet<WorkerContract> WorkerContracts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -88,6 +89,38 @@ namespace TaskLiner.DB.Entity
                     .HasForeignKey(d => d.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("project_ibfk_1");
+            });
+
+            modelBuilder.Entity<ProjectAccess>(entity =>
+            {
+                entity.ToTable("project_access");
+
+                entity.HasIndex(e => e.ProjectId, "project_id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ContractId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("contract_id");
+
+                entity.Property(e => e.ProjectId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("project_id");
+
+                entity.HasOne(d => d.Contract)
+                    .WithOne(p => p.ProjectAccess)
+                    .HasForeignKey<ProjectAccess>(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("project_access_ibfk_1");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.ProjectAccesses)
+                    .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("project_access_ibfk_2");
             });
 
             modelBuilder.Entity<Task>(entity =>
@@ -185,19 +218,17 @@ namespace TaskLiner.DB.Entity
                     .HasConstraintName("task_comment_ibfk_1");
             });
 
-            modelBuilder.Entity<TaskUser>(entity =>
+            modelBuilder.Entity<TaskSubscriber>(entity =>
             {
-                entity.HasNoKey();
-
-                entity.ToTable("task_user");
+                entity.ToTable("task_subscribers");
 
                 entity.HasIndex(e => e.TaskId, "task_id");
 
                 entity.HasIndex(e => e.UserId, "user_id");
 
-                entity.Property(e => e.HoursWorked).HasColumnName("hours_worked");
-
-                entity.Property(e => e.IsOwner).HasColumnName("is_owner");
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
 
                 entity.Property(e => e.TaskId)
                     .HasColumnType("int unsigned")
@@ -208,47 +239,16 @@ namespace TaskLiner.DB.Entity
                     .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Task)
-                    .WithMany()
+                    .WithMany(p => p.TaskSubscribers)
                     .HasForeignKey(d => d.TaskId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("task_user_ibfk_1");
+                    .HasConstraintName("task_subscribers_ibfk_1");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.TaskSubscribers)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("task_user_ibfk_2");
-            });
-
-            modelBuilder.Entity<TaskUserSubscriber>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("task_user_subscribers");
-
-                entity.HasIndex(e => e.TaskId, "task_id");
-
-                entity.HasIndex(e => e.UserId, "user_id");
-
-                entity.Property(e => e.TaskId)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("task_id");
-
-                entity.Property(e => e.UserId)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("user_id");
-
-                entity.HasOne(d => d.Task)
-                    .WithMany()
-                    .HasForeignKey(d => d.TaskId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("task_user_subscribers_ibfk_1");
-
-                entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("task_user_subscribers_ibfk_2");
+                    .HasConstraintName("task_subscribers_ibfk_2");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -288,24 +288,64 @@ namespace TaskLiner.DB.Entity
                     .HasColumnName("proffesion");
             });
 
-            modelBuilder.Entity<WorkerContract>(entity =>
+            modelBuilder.Entity<UserTask>(entity =>
             {
-                entity.HasKey(e => new { e.CompanyId, e.UserId })
-                    .HasName("PRIMARY");
+                entity.ToTable("user_tasks");
 
-                entity.ToTable("worker_contract");
+                entity.HasIndex(e => e.TaskId, "task_id");
 
                 entity.HasIndex(e => e.UserId, "user_id");
 
-                entity.Property(e => e.CompanyId)
+                entity.Property(e => e.Id)
                     .HasColumnType("int unsigned")
-                    .HasColumnName("company_id");
+                    .HasColumnName("id");
+
+                entity.Property(e => e.HoursWorked).HasColumnName("hours_worked");
+
+                entity.Property(e => e.IsOwner).HasColumnName("is_owner");
+
+                entity.Property(e => e.TaskId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("task_id");
 
                 entity.Property(e => e.UserId)
                     .HasColumnType("int unsigned")
                     .HasColumnName("user_id");
 
+                entity.HasOne(d => d.Task)
+                    .WithMany(p => p.UserTasks)
+                    .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("user_tasks_ibfk_1");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserTasks)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("user_tasks_ibfk_2");
+            });
+
+            modelBuilder.Entity<WorkerContract>(entity =>
+            {
+                entity.ToTable("worker_contract");
+
+                entity.HasIndex(e => e.CompanyId, "company_id");
+
+                entity.HasIndex(e => e.UserId, "user_id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CompanyId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("company_id");
+
                 entity.Property(e => e.IsOwner).HasColumnName("is_owner");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int unsigned")
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.WorkerContracts)

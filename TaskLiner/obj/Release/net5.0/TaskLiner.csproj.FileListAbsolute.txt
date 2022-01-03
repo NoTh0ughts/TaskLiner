@@ -84,3 +84,5 @@ C:\Users\Hello\source\repos\TaskLiner\TaskLiner\obj\Release\net5.0\TaskLiner.csp
 C:\Users\Hello\source\repos\TaskLiner\TaskLiner\bin\Release\net5.0\System.Net.WebSockets.WebSocketProtocol.dll
 C:\Users\Hello\source\repos\TaskLiner\TaskLiner\bin\Release\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\Hello\source\repos\TaskLiner\TaskLiner\bin\Release\net5.0\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Hello\source\repos\TaskLiner\TaskLiner\bin\Release\net5.0\MediatR.dll
+C:\Users\Hello\source\repos\TaskLiner\TaskLiner\bin\Release\net5.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
